@@ -1,26 +1,34 @@
+from tkinter import *
+from tkinter import filedialog
+
 import pandas as pd
 import math
-#*** CONFIGURACION****
+##Definicion funciones para uso de eventos/botones
+def browse_button():
+    # Allow user to select a directory and store it in global var
+    # called folder_path
 
-#*****NOMBRE DE LOS ARCHIVOS*******
-fileVentas = 'ventas.xlsx'
-#Nombre archivo con los stocks por semana
-fileStocks = [
-'stock semana 10.xlsx',
-'stock semana 11.xlsx',
-'stock semana 12.xlsx',
-'stock semana 13.xlsx',
-'stock semana 14.xlsx',
-]
-#***********SEMANAS Y TIENDA  Q VAMOS A CALCULAR ROTACION***********
-semana_A=13
-semana_B=12
-tienda='TRAPENSES'
+    filename = filedialog.askdirectory()
+    dir.set(str(filename))
+    print(filename)
+    print(dir.get())
 
 
+def next(event):
+    #dir=folder_path.get()
 
-#****INICIO SCRIPT***********
-#Fila, columna
+    vt=saleNameEntry.get()
+    vtSheet=saleSheetEntry.get()
+    stockA=stockaNameEntry.get()
+    stockA_Sheet=stockaSheetEntry.get()
+    stockB=stockbNameEntry.get()
+    stockB_Sheet=stockbSheetEntry.get()
+    week=semanaEntry.get()
+    print(dir.get())
+    event.widget.grid_forget()
+
+#Definicion funciones para trabajo de excels.
+
 def GetVentas ( semana_B, file , tienda):
     xl=pd.ExcelFile(file)
     Ventas= (xl.parse('vta 18'))
@@ -57,9 +65,6 @@ def GetVentas ( semana_B, file , tienda):
     del(Data[i:len(Data)])
     Matriz=pd.DataFrame(Data)
     return Data
-#print (GetVentas(fileVentas))
-#construir matriz de stock de la siguiente forma:
-#sku, nombre, cantidad, semana, mes, tienda
 def GetStock(file, tienda):
     xl=pd.ExcelFile(file)
     stock=(xl.parse('stock'))
@@ -93,19 +98,6 @@ def GetStock(file, tienda):
     #Matriz=pd.DataFrame(Data)
     del(Data[contadorDisp:len(Data)])
     return Data
-print("********** CARGANDO STOCK SEMANA 13 ****************")
-stock_a=GetStock('stock semana 13.xlsx', tienda)
-print("********** CARGANDO VENTAS SEMANA 13 *****************")
-ventas=GetVentas(13,'ventas.xlsx', tienda)
-print("********** CARGANDO STOCK SEMANA 12 *****************")
-stock_b=GetStock('stock semana 12.xlsx', tienda)
-print('SEMANA 13 ********************')
-print(pd.DataFrame(stock_a))
-
-print('SEMANA 12 ********************')
-print(pd.DataFrame(stock_b))
-
-#variables funcion inicio semana, semana final, matriz de ventas, matriz de stock, tienda
 def calcularRotation( ventas, stock_a, stock_b):
     Data= [[ '' for x in range(9)] for y in range(len(ventas))]
     #Data=[]
@@ -152,17 +144,75 @@ def calcularRotation( ventas, stock_a, stock_b):
     return dataframe
 
 
-print("*****CALCULANDO ROTACION DE INVENTARIO ********")
-rotacion=calcularRotation(ventas,stock_a,stock_b)
 
-print("******CREANDO EXCEL CON ROTAION DE INVENTARIO **********")
-rotacion.to_csv(path_or_buf=tienda+".csv", index=False)
-print("*****SCRIPT TERMINADO*********")
+root = Tk()
+
+###Global variables
+dir=StringVar()
+vt=StringVar()
+vtSheet=StringVar()
+stockA=StringVar()
+stockA_Sheet=StringVar()
+stockB=StringVar()
+stockB_Sheet=StringVar()
+week=StringVar()
 
 
-#writer = pd.ExcelWriter(('Rotacionqlia.xlsx', engine='xlsxwriter')
+
+buttonBrowse = Button(text="Buscar directorio", command=browse_button)
+title = Label(root, text= "Manejo de inventarios KayaUnite")
+config=Label(root, text="Kaya more Faya")
+browseLabel= Label(root, text="Directorio de trabajo")
+browseText= Label(root, text=str(dir.get()))
 
 
-#rotacion.to_excel(writer, sheet_name='rotacion')
+saleLabel=Label(root, text="Nombre archivo ventas")
+saleNameEntry=Entry(root)
+saleSheetName=Label(root, text= "Hoja de trabajo")
+saleSheetEntry=Entry(root)
 
-#writer.save()
+
+stockaLabel=Label(root, text="Nombre archivo stock inicial")
+stockaNameEntry=Entry(root)
+stockaSheetName=Label(root,text="Hoja de trabajo")
+stockaSheetEntry=Entry(root)
+
+stockbLabel=Label(root, text= "Nombre archivo stock anterior")
+stockbNameEntry=Entry(root)
+stockbSheetName=Label(root,text="Hoja de trabajo")
+stockbSheetEntry=Entry(root)
+
+buttonNext=Button(text="Aplicar configuracion", command=next)
+buttonNext.bind('<Button-1>', next)
+
+
+semanaLabel=Label(root, text="Semana")
+semanaEntry=Entry(root)
+
+#grid row column
+title.grid(row=0)
+config.grid(row=1)
+browseLabel.grid(row=2, column=0)
+browseText.grid(row=2, column= 1)
+buttonBrowse.grid(row=2, column=2)
+saleLabel.grid(row=3, column=0)
+saleNameEntry.grid(row=3, column=1)
+saleSheetName.grid(row=3,column=2)
+saleSheetEntry.grid(row=3, column=3)
+
+stockaLabel.grid(row=4, column=0)
+stockaNameEntry.grid(row=4, column=1)
+stockaSheetName.grid(row=4, column=2)
+stockaSheetEntry.grid(row=4, column=3)
+
+stockbLabel.grid(row=5, column=0)
+stockbNameEntry.grid(row=5, column=1)
+stockbSheetName.grid(row=5, column=2)
+stockbSheetEntry.grid(row=5, column=3)
+
+semanaLabel.grid(row=6, column=0)
+semanaEntry.grid(row=6, column=1)
+
+buttonNext.grid(row=7, column=3)
+
+root.mainloop()
