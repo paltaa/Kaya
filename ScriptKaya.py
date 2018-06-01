@@ -41,8 +41,10 @@ def GetVentas ( semana_B, file , tienda):
         elif(headers[i]=='LOCAL'):
             colTienda=i
     i=0
+    print (len(Ventas))
     for k in range(len(Ventas)):
-        if(Ventas.iloc[k,colFact]!= -1  and Ventas.iloc[k,colSemana] ==semana_B and tienda ==Ventas.iloc[k,colTienda]) :
+        if(Ventas.iloc[k,colFact]!= -1  and Ventas.iloc[k,colSemana] ==semana_B and tienda == Ventas.iloc[k,colTienda]) :
+            print (k)
             Data[i][0]=Ventas.iloc[k,colCodProd]     #sku
             Data[i][1]=Ventas.iloc[k,colProd]     #Producto
             if (  Ventas.iloc[k,colFact]=='.'):
