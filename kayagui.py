@@ -93,7 +93,6 @@ def GetVentas ( semana_B, file , tienda, sheetName):
             i=i+1
 
     del(Data[i:len(Data)])
-    Matriz=pd.DataFrame(Data)
     print("******Matriz de ventas tienda "+ tienda +" cargada con exito**********")
     #print(Matriz)
     return Data
@@ -160,7 +159,7 @@ def calcularRotation( ventas, stock_a, stock_b):
             ventas[i][0] == stock_a[j][0]):    #SKU iguales
 
                     Data[i][4]=stock_a[j][2]  #inventario anterior
-
+                    
         for k in range(len_b):
                 if(ventas[i][3]-1 ==stock_b[k][3]  and   #Semanas iguales
                     ventas[i][0] == stock_b[k][0]):   #SKU iguales

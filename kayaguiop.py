@@ -79,21 +79,24 @@ def GetVentas ( semana_B, file , tienda, sheetName):
         elif(headers[i]=='LOCAL'):
             colTienda=i
     i=0
-    for k in Ventas.iterrows():
-        if(Ventas.iloc[k,colFact]!= -1  and Ventas.iloc[k,colSemana] == int(semana_B) and tienda == Ventas.iloc[k,colTienda]) :
-            Data[i][0]=Ventas.iloc[k,colCodProd]     #sku
-            Data[i][1]=Ventas.iloc[k,colProd]     #Producto
-            if (  Ventas.iloc[k,colFact]=='.'):
+    """ Codigo para iterrows
+    for index, rows in ventas.iterrows():
+    print(rows['Bodega'])
+    """
+    for index, rows in Ventas.iterrows():
+        if(rows[colFact]!= -1  and rows[colSemana] == int(semana_B) and tienda == rows[colTienda]) :
+            Data[i][0]=rows[colCodProd]     #sku
+            Data[i][1]=rows[colProd]     #Producto
+            if (  rows[colFact]=='.'):
                 Data[i][2]=0
             else:
-                Data[i][2]=Ventas.iloc[k,colFact]     #Cantidad
-            Data[i][3]=Ventas.iloc[k,colSemana]    #semana
-            Data[i][4]=Ventas.iloc[k,colMes]    #mes
-            Data[i][5]=Ventas.iloc[k,colTienda]    #tienda
+                Data[i][2]=rows[colFact]     #Cantidad
+            Data[i][3]=rows[colSemana]    #semana
+            Data[i][4]=rows[colMes]    #mes
+            Data[i][5]=rows[colTienda]    #tienda
             i=i+1
 
     del(Data[i:len(Data)])
-    Matriz=pd.DataFrame(Data)
     print("******Matriz de ventas tienda "+ tienda +" cargada con exito**********")
     #print(Matriz)
     return Data
@@ -119,14 +122,18 @@ def GetStock(file, tienda):
         elif(headers[i]=='BODEGA nombre'):
             colTienda=i
     contadorDisp=0
-    for k in stock.iterrows():
-        if(stock.iloc[k,colDisp]>0 and tienda == stock.iloc[k,colTienda]):
-            Data[contadorDisp][0]=stock.iloc[k,colCodProd]
-            Data[contadorDisp][1]=stock.iloc[k,colProd]
-            Data[contadorDisp][2]=stock.iloc[k,colDisp]
-            Data[contadorDisp][3]=stock.iloc[k,colSemana]
-            Data[contadorDisp][4]=stock.iloc[k,colMes]
-            Data[contadorDisp][5]=stock.iloc[k,colTienda]
+    """ Codigo para iterrows
+    for index, rows in ventas.iterrows():
+    print(rows['Bodega'])
+    """
+    for index, rows in stock.iterrows():
+        if(rows[colDisp]>0 and tienda == rows[colTienda]):
+            Data[contadorDisp][0]=rows[colCodProd]
+            Data[contadorDisp][1]=rows[colProd]
+            Data[contadorDisp][2]=rows[colDisp]
+            Data[contadorDisp][3]=rows[colSemana]
+            Data[contadorDisp][4]=rows[colMes]
+            Data[contadorDisp][5]=rows[colTienda]
             contadorDisp=contadorDisp+1
     #Matriz=pd.DataFrame(Data)
     del(Data[contadorDisp:len(Data)])
@@ -160,12 +167,12 @@ def calcularRotation( ventas, stock_a, stock_b):
             ventas[i][0] == stock_a[j][0]):    #SKU iguales
 
                     Data[i][4]=stock_a[j][2]  #inventario anterior
-
+                    break
         for k in range(len_b):
                 if(ventas[i][3]-1 ==stock_b[k][3]  and   #Semanas iguales
                     ventas[i][0] == stock_b[k][0]):   #SKU iguales
                     Data[i][3]=stock_b[k][2] #inventario actual
-
+                    break
         if(type(Data[i][2])==str or  type(Data[i][3]) == str or  type(Data[i][4])==str):
             Data[i][5]='No Hay info'
 
